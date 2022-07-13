@@ -1,0 +1,47 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Entity {
+  id          String     @id @default(uuid())
+  votes       Vote[]
+  rating      Rating?
+  imageURL    String
+  name        String
+  wikipediaId String
+  incidents   Incident[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Vote {
+  id       String @id @default(uuid())
+  entity   Entity @relation(fields: [entityId], references: [id])
+  entityId String
+
+  createdAt DateTime @default(now())
+}
+
+model Rating {
+  id       String @id @default(uuid())
+  entityId String @unique
+  entity   Entity @relation(fields: [entityId], references: [id])
+
+  updatedAt DateTime @updatedAt
+}
+
+model Incident {
+  id       String @id @default(uuid())
+  entity   Entity @relation(fields: [entityId], references: [id])
+  entityId String
+  url      String
+  title    String
+
+  createdAt DateTime @default(now())
+}
