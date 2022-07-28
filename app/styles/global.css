@@ -1,0 +1,8 @@
+@font-face {
+  font-family: "Amelia Regular";
+  src: url("/fonts/Amelia Regular.ttf") format("ttf");
+}
+
+html {
+  font-family: "Amelia Regular", Georgia, 'Times New Roman', Times, serif;
+}
