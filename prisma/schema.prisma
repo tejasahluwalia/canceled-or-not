@@ -8,12 +8,13 @@ generator client {
 }
 
 model Entity {
-  id          String     @id @default(uuid())
+  id          Int        @id @default(autoincrement())
   votes       Vote[]
   rating      Rating?
-  imageURL    String
+  imageUrl    String?
   name        String
-  wikipediaId String
+  slug        String     @unique
+  wikipediaId Int
   incidents   Incident[]
 
   createdAt DateTime @default(now())
@@ -21,27 +22,37 @@ model Entity {
 }
 
 model Vote {
-  id       String @id @default(uuid())
+  id       Int    @id @default(autoincrement())
   entity   Entity @relation(fields: [entityId], references: [id])
-  entityId String
+  entityId Int
+  value    Int
+  user     User   @relation(fields: [userId], references: [id])
+  userId   Int
 
   createdAt DateTime @default(now())
 }
 
 model Rating {
-  id       String @id @default(uuid())
-  entityId String @unique
-  entity   Entity @relation(fields: [entityId], references: [id])
-
-  updatedAt DateTime @updatedAt
+  id           Int      @id @default(autoincrement())
+  entityId     Int      @unique
+  entity       Entity   @relation(fields: [entityId], references: [id])
+  distribution String
+  updatedAt    DateTime @updatedAt
 }
 
 model Incident {
-  id       String @id @default(uuid())
+  id       Int    @id @default(autoincrement())
   entity   Entity @relation(fields: [entityId], references: [id])
-  entityId String
+  entityId Int
   url      String
   title    String
 
   createdAt DateTime @default(now())
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  votes     Vote[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
