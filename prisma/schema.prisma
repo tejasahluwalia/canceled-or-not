@@ -8,14 +8,15 @@ generator client {
 }
 
 model Entity {
-  id          Int        @id @default(autoincrement())
-  votes       Vote[]
-  rating      Rating?
-  imageUrl    String?
-  name        String
-  slug        String     @unique
-  wikipediaId Int
-  incidents   Incident[]
+  id             Int        @id @default(autoincrement())
+  votes          Vote[]
+  rating         Rating?
+  imageUrl       String?
+  descriptionUrl String?
+  name           String
+  slug           String     @unique
+  wikipediaId    Int
+  incidents      Incident[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

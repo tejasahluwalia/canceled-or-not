@@ -38,21 +38,47 @@ export function getEntitySuggestions({ name }: Pick<Entity, "name">) {
 
 export async function createEntity({
   wikipediaId,
-  imageUrl,
   name,
-}: Pick<Entity, "wikipediaId" | "imageUrl" | "name">) {
+  pageImage,
+}: Pick<Entity, "wikipediaId" | "name"> & { pageImage?: string }) {
   const slug = slugify(name);
-  await prisma.entity
-    .create({
-      data: {
-        wikipediaId,
-        imageUrl,
-        name,
-        slug,
-      },
-    })
-    .then(async (entity) => {
-      await createEmptyRating({ entityId: entity.id });
-    });
+  if (pageImage) {
+    let data = await fetch(
+      `https://en.wikipedia.org/w/api.php?action=query&format=json&prop=pageimages&titles=File%3A${pageImage}&utf8=1&formatversion=latest&pithumbsize=500`
+    ).then((res) => res.json());
+    let imageUrl = data.query.pages[0].thumbnail.source;
+    data = await fetch(
+      `https://en.wikipedia.org/w/api.php?action=query&format=json&prop=imageinfo&titles=File%3A${pageImage}&utf8=1&formatversion=latest&iiprop=url`
+    ).then((res) => res.json());
+    let descriptionUrl = data.query.pages[0].imageinfo[0].descriptionurl;
+
+    await prisma.entity
+      .create({
+        data: {
+          wikipediaId,
+          imageUrl,
+          descriptionUrl,
+          name,
+          slug,
+        },
+      })
+      .then(async (entity) => {
+        await createEmptyRating({ entityId: entity.id });
+      });
+  } else {
+    await prisma.entity
+      .create({
+        data: {
+          wikipediaId,
+          imageUrl: "/default-image.png",
+          name,
+          slug,
+        },
+      })
+      .then(async (entity) => {
+        await createEmptyRating({ entityId: entity.id });
+      });
+  }
+
   return;
 }
