@@ -1,6 +1,6 @@
 import { ActionFunction, LoaderFunction, redirect } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { Form, useLoaderData } from "@remix-run/react";
+import { Form, useLoaderData, useTransition } from "@remix-run/react";
 import { getEntity, createEntity } from "~/models/entity.server";
 import { slugify } from "~/utils";
 
@@ -36,7 +36,7 @@ export const action: ActionFunction = async ({ request }) => {
     } else {
       await createEntity({
         wikipediaId: entity.pageid,
-        imageUrl: entity.thumbnail?.source ?? null,
+        pageImage: entity.pageimage ?? undefined,
         name: entity.title,
       });
       return redirect(`/${slug}`);
@@ -61,13 +61,14 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 export default function Search() {
   const searchQueryResults = useLoaderData<LoaderData>();
+  const transition = useTransition();
 
   if (searchQueryResults) {
     const suggestions = Object.values(searchQueryResults.query.pages).sort(
       (a, b) => a.index - b.index
     );
     return (
-      <form method="post" action="/search">
+      <Form method="post" action="/search">
         {suggestions.map((page) => (
           <button
             name="entity"
@@ -75,6 +76,7 @@ export default function Search() {
             key={page.pageid}
             value={JSON.stringify(page)}
             autoFocus={page.index === 1}
+            disabled={transition.state === "submitting"}
           >
             {page.thumbnail && (
               <img
@@ -86,7 +88,7 @@ export default function Search() {
             {page.title}
           </button>
         ))}
-      </form>
+      </Form>
     );
   } else {
     return null;
