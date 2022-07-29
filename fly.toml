@@ -1,4 +1,4 @@
-app = "canceled-or-not-c192"
+app = "canceled-or-not"
 kill_signal = "SIGINT"
 kill_timeout = 5
 processes = [ ]
