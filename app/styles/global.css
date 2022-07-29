@@ -1,8 +1,8 @@
 @font-face {
-  font-family: "Amelia Regular";
-  src: url("/fonts/Amelia Regular.ttf") format("ttf");
+  font-family: "amelia-regular";
+  src: url("/fonts/AmeliaRegular.ttf");
 }
 
-html {
-  font-family: "Amelia Regular", Georgia, 'Times New Roman', Times, serif;
+h1 {
+  font-family: "amelia-regular";
 }
