@@ -5,5 +5,7 @@ export const userCookie = createCookie("user", {
   secure: true,
   httpOnly: true,
   path: "/",
+  domain: "canceled-or-not.com",
+  sameSite: "strict",
   secrets: ["wPEDg2vY8hDxNFdCKvC7"],
 });

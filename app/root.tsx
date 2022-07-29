@@ -20,6 +20,8 @@ import tailwindStylesheetUrl from "./styles/tailwind.css";
 import globalStyleSheet from "./styles/global.css";
 import { userCookie } from "./cookie";
 import { createUser, getUser } from "./models/user.server";
+import { useEffect, useState } from "react";
+import clsx from "clsx";
 
 export const links: LinksFunction = () => {
   return [
@@ -36,22 +38,18 @@ export const meta: MetaFunction = () => ({
 
 export const loader: LoaderFunction = async ({ request }) => {
   const cookieHeader = request.headers.get("Cookie");
-  let id = await userCookie.parse(cookieHeader);
-
-  if (id) {
-    let currUser = await getUser({ id: id.id });
-
-    if (!currUser) {
+  if (cookieHeader) {
+    let id = await userCookie.parse(cookieHeader);
+    if (!id) {
       let newUser = await createUser();
       return json(newUser, {
         headers: {
           "Set-Cookie": await userCookie.serialize({ userId: newUser.id }),
         },
       });
-    } else {
-      return null;
     }
   } else {
+    console.log("No cookie header");
     let newUser = await createUser();
     return json(newUser, {
       headers: {
@@ -61,26 +59,48 @@ export const loader: LoaderFunction = async ({ request }) => {
       },
     });
   }
+  return null;
 };
 
 export default function App() {
   const transition = useTransition();
+  const [scrollPosition, setScrollPosition] = useState(0);
+
+  const handleScroll = () => {
+    const position = window.pageYOffset;
+    setScrollPosition(position);
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
   return (
     <SSRProvider>
-      <html lang="en" className="h-full">
+      <html lang="en">
         <head>
           <Meta />
           <Links />
         </head>
         <body className="mt-1/5 relative flex h-full min-h-screen flex-col items-center bg-white">
-          <section className="sticky top-0 mx-auto w-full bg-black text-center">
+          <section className="sticky top-0 z-10 mx-auto w-full bg-black text-center shadow-xl">
             <Form
               method="get"
               action="/search"
               className="container my-8 mx-auto w-full px-4 lg:max-w-3xl"
             >
               <label htmlFor="query">
-                <h1 className="my-4 block text-5xl text-[red] sm:text-6xl md:text-7xl lg:text-8xl">
+                <h1
+                  className={clsx(
+                    "my-4 block text-5xl text-[red] transition-all sm:text-6xl md:text-7xl lg:text-8xl",
+                    scrollPosition > 0
+                      ? "text-3xl sm:text-4xl md:text-5xl lg:text-6xl"
+                      : ""
+                  )}
+                >
                   Canceled or Not
                 </h1>
               </label>
@@ -88,7 +108,7 @@ export default function App() {
                 <input
                   type="search"
                   name="query"
-                  className="w-auto flex-1 rounded-lg bg-white p-2"
+                  className="w-auto flex-1 rounded-lg bg-white p-2 lg:text-xl"
                   disabled={transition.state === "submitting"}
                 />
                 <button

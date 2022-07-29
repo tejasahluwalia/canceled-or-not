@@ -6,3 +6,42 @@
 h1 {
   font-family: "amelia-regular";
 }
+
+.rating-range {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+  width: 15rem;
+}
+
+/***** Chrome, Safari, Opera, and Edge Chromium *****/
+.rating-range::-webkit-slider-runnable-track {
+  background: #1E9600;
+  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to left, #FF0000, #FFF200, #1E9600);
+  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to left, #FF0000, #FFF200, #1E9600);
+  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  height: 2rem;
+}
+
+.rating-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+}
+
+/******** Firefox ********/
+.rating-range::-moz-range-track {
+  background: #1E9600;
+  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to left, #FF0000, #FFF200, #1E9600);
+  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to left, #FF0000, #FFF200, #1E9600);
+  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  height: 2rem;
+}
+
+.rating-range::-moz-range-thumb {
+  height: 3rem;
+  width: 0.5rem;
+}

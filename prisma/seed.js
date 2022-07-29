@@ -12,12 +12,5 @@ async function seed() {
 seed();
 
 function getEntities() {
-  return [
-    {
-      name: "Tom Hanks",
-      imageUrl:
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Tom_Hanks_TIFF_2019.jpg/220px-Tom_Hanks_TIFF_2019.jpg",
-      wikipediaId: "Tom_Hanks",
-    },
-  ];
+  return [];
 }

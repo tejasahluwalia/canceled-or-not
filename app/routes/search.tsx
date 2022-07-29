@@ -51,7 +51,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   const query = url.searchParams.get("query");
 
   if (query) {
-    const queryURL = `https://en.wikipedia.org/w/api.php?action=query&generator=prefixsearch&gpssearch=${query}&prop=pageimages&utf8=&format=json&formatversion=2&gpslimit=10`;
+    const queryURL = `https://en.wikipedia.org/w/api.php?action=query&generator=prefixsearch&gpssearch=${query}&prop=pageimages&piprop=thumbnail%7Cname&pithumbsize=300&utf8=&format=json&formatversion=latest&gpslimit=10`;
     const res = await fetch(queryURL);
     return json(await res.json());
   } else {
@@ -68,7 +68,11 @@ export default function Search() {
       (a, b) => a.index - b.index
     );
     return (
-      <Form method="post" action="/search">
+      <Form
+        method="post"
+        action="/search"
+        className="container mx-4 mt-4 flex w-full flex-col gap-4 lg:max-w-3xl"
+      >
         {suggestions.map((page) => (
           <button
             name="entity"
@@ -77,12 +81,13 @@ export default function Search() {
             value={JSON.stringify(page)}
             autoFocus={page.index === 1}
             disabled={transition.state === "submitting"}
+            className="mx-4 flex items-center gap-4 border-4 border-black p-4 text-left text-2xl font-bold uppercase outline hover:outline-4 hover:outline-red-600 focus:border-red-600 focus:outline-4 focus:outline-red-600 sm:h-32"
           >
             {page.thumbnail && (
               <img
                 src={page.thumbnail.source}
                 alt={page.pageimage}
-                className="aspect-square w-12 object-cover"
+                className="aspect-square h-24 w-24 object-cover"
               />
             )}
             {page.title}
