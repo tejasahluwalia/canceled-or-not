@@ -11,3 +11,15 @@ export async function createUser() {
 
   return user;
 }
+
+export async function getUser({ id }: Pick<User, "id">) {
+  // Get a user by their ID
+  const user = await prisma.user.findFirst({
+    select: {
+      id: true,
+    },
+    where: { id },
+  });
+
+  return user;
+}
