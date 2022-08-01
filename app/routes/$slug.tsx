@@ -4,13 +4,12 @@ import type {
   MetaFunction,
 } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
+import { useMemo } from "react";
+import { AxisOptions, Chart } from "react-charts";
 import invariant from "tiny-invariant";
 import { userCookie } from "~/cookie";
 import { getEntity } from "~/models/entity.server";
 import { createVote } from "~/models/vote.server";
-import { ClientOnly } from "remix-utils";
-import { useMemo } from "react";
-import { AxisOptions, Chart } from "react-charts";
 
 type LoaderData = Awaited<ReturnType<typeof getEntity>>;
 
@@ -57,30 +56,30 @@ export const meta: MetaFunction = ({ data }) => {
 
 export default function Entity() {
   const entity = useLoaderData<LoaderData>();
+  type RatingData = {
+    rating: number;
+    votes: number;
+  };
+  const primaryAxis = useMemo(
+    (): AxisOptions<RatingData> => ({
+      getValue: (datum) => datum.rating,
+      tickCount: 10,
+    }),
+    []
+  );
+  const secondaryAxes = useMemo(
+    (): AxisOptions<RatingData>[] => [
+      {
+        getValue: (datum) => datum.votes,
+        show: false,
+        stacked: true,
+      },
+    ],
+    []
+  );
   if (!entity) {
     return <>Page not found</>;
   } else {
-    type RatingData = {
-      rating: number;
-      votes: number;
-    };
-    const primaryAxis = useMemo(
-      (): AxisOptions<RatingData> => ({
-        getValue: (datum) => datum.rating,
-        tickCount: 10,
-      }),
-      []
-    );
-    const secondaryAxes = useMemo(
-      (): AxisOptions<RatingData>[] => [
-        {
-          getValue: (datum) => datum.votes,
-          show: false,
-          stacked: true,
-        },
-      ],
-      []
-    );
     let ratingDistribution = JSON.parse(entity.rating!.distribution) as {
       [key: number]: number;
     };
@@ -105,7 +104,6 @@ export default function Entity() {
                 <img
                   src={entity.imageUrl}
                   height="500"
-                  alt={`Image of ${entity.name} from Wikipedia`}
                   className="aspect-[3/4] w-3/4 max-w-sm object-cover md:w-full"
                 />
                 {entity.descriptionUrl && (
@@ -172,6 +170,7 @@ export default function Entity() {
                 min={1}
                 max={10}
                 step={1}
+                defaultValue={1}
               />
             </label>
             <input type="hidden" name="entityId" value={entity.id} />

@@ -44,7 +44,6 @@ export async function createEntity({
   pageImage,
 }: Pick<Entity, "wikipediaId" | "name"> & { pageImage?: string }) {
   const slug = slugify(name);
-
   if (pageImage) {
     let data = await fetch(
       `https://en.wikipedia.org/w/api.php?action=query&format=json&prop=pageimages&titles=File%3A${pageImage}&utf8=1&formatversion=latest&pithumbsize=500`

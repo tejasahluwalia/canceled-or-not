@@ -86,25 +86,28 @@ export default function App() {
           <Links />
         </head>
         <body className="mt-1/5 relative flex h-full min-h-screen flex-col items-center bg-white">
-          <section className="sticky top-0 z-10 mx-auto w-full bg-black text-center shadow-xl">
+          <section className="fixed top-0 z-10 mx-auto w-full bg-black text-center shadow-xl">
             <Form
               method="get"
               action="/search"
-              className="container my-8 mx-auto w-full px-4 lg:max-w-3xl"
+              className={clsx(
+                "container my-8 mx-auto w-full px-4 transition-all duration-200 lg:max-w-3xl",
+                scrollPosition > 10 ? "mt-4" : ""
+              )}
             >
               <label htmlFor="query">
                 <h1
                   className={clsx(
-                    "my-4 block text-5xl text-[red] transition-all sm:text-6xl md:text-7xl lg:text-8xl",
-                    scrollPosition > 0
-                      ? "text-3xl sm:text-4xl md:text-5xl lg:text-6xl"
-                      : ""
+                    "block text-5xl text-[red] transition-all duration-200 sm:text-6xl md:text-7xl lg:text-8xl",
+                    scrollPosition > 10
+                      ? "mb-4 text-3xl sm:text-4xl md:text-5xl lg:text-6xl"
+                      : "mb-8"
                   )}
                 >
                   Canceled or Not
                 </h1>
               </label>
-              <div className="mt-8 flex w-full gap-4">
+              <div className="flex w-full gap-4">
                 <input
                   type="search"
                   name="query"
@@ -122,7 +125,9 @@ export default function App() {
               </div>
             </Form>
           </section>
-          <Outlet />
+          <div className="container mx-auto mt-48">
+            <Outlet />
+          </div>
           <ScrollRestoration />
           <Scripts />
           <LiveReload />

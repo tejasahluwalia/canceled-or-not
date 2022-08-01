@@ -71,7 +71,7 @@ export default function Search() {
       <Form
         method="post"
         action="/search"
-        className="container mx-4 mt-4 flex w-full flex-col gap-4 lg:max-w-3xl"
+        className="container mx-auto mt-20 flex w-full flex-col gap-4 lg:max-w-3xl"
       >
         {suggestions.map((page) => (
           <button
