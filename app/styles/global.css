@@ -28,6 +28,12 @@ h1 {
 
 .rating-range::-webkit-slider-thumb {
   -webkit-appearance: none;
+  height: 3rem;
+  width: 0.5rem;
+  border-radius: 3px;
+  background: #ffffff;
+  margin-top: -0.5rem;
+  border: solid gray 1px;
 }
 
 /******** Firefox ********/
@@ -43,5 +49,8 @@ h1 {
 
 .rating-range::-moz-range-thumb {
   height: 3rem;
+  background: #ffffff;
   width: 0.5rem;
+  border: solid gray 1px;
+  border-radius: 3px;
 }
