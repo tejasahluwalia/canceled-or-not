@@ -1,5 +1,6 @@
-import type {
+import {
   ActionFunction,
+  json,
   LoaderFunction,
   MetaFunction,
 } from "@remix-run/node";
@@ -9,6 +10,7 @@ import { AxisOptions, Chart } from "react-charts";
 import invariant from "tiny-invariant";
 import { userCookie } from "~/cookie";
 import { getEntity } from "~/models/entity.server";
+import { getUser, createUser } from "~/models/user.server";
 import { createVote } from "~/models/vote.server";
 
 type LoaderData = Awaited<ReturnType<typeof getEntity>>;
@@ -32,11 +34,50 @@ export const action: ActionFunction = async ({ request }) => {
 
 export const loader: LoaderFunction = async ({ request, params }) => {
   const { slug } = params;
-  if (slug) {
-    const entity = await getEntity({ slug });
-    return entity;
+  const cookieHeader = request.headers.get("Cookie");
+  if (cookieHeader) {
+    let id = await userCookie.parse(cookieHeader);
+    if (id) {
+      let currentUser = await getUser({
+        id: id.userId,
+      });
+      if (!currentUser) {
+        let newUser = await createUser();
+        if (slug) {
+          const entity = await getEntity({ slug });
+          return json(entity, {
+            headers: {
+              "Set-Cookie": await userCookie.serialize({
+                userId: newUser.id,
+              }),
+            },
+          });
+        }
+      }
+    }
+    if (!id) {
+      let newUser = await createUser();
+      if (slug) {
+        const entity = await getEntity({ slug });
+        return json(entity, {
+          headers: {
+            "Set-Cookie": await userCookie.serialize({ userId: newUser.id }),
+          },
+        });
+      }
+    }
   } else {
-    return null;
+    let newUser = await createUser();
+    if (slug) {
+      const entity = await getEntity({ slug });
+      return json(entity, {
+        headers: {
+          "Set-Cookie": await userCookie.serialize({
+            userId: newUser.id,
+          }),
+        },
+      });
+    }
   }
 };
 

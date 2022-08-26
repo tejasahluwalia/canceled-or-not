@@ -22,6 +22,7 @@ import { userCookie } from "./cookie";
 import { createUser, getUser } from "./models/user.server";
 import { useEffect, useState } from "react";
 import clsx from "clsx";
+import { prisma } from "@prisma/client";
 
 export const links: LinksFunction = () => {
   return [
@@ -35,32 +36,6 @@ export const meta: MetaFunction = () => ({
   title: "Canceled or Not",
   viewport: "width=device-width,initial-scale=1",
 });
-
-export const loader: LoaderFunction = async ({ request }) => {
-  const cookieHeader = request.headers.get("Cookie");
-  if (cookieHeader) {
-    let id = await userCookie.parse(cookieHeader);
-    if (!id) {
-      let newUser = await createUser();
-      return json(newUser, {
-        headers: {
-          "Set-Cookie": await userCookie.serialize({ userId: newUser.id }),
-        },
-      });
-    }
-  } else {
-    console.log("No cookie header");
-    let newUser = await createUser();
-    return json(newUser, {
-      headers: {
-        "Set-Cookie": await userCookie.serialize({
-          userId: newUser.id,
-        }),
-      },
-    });
-  }
-  return null;
-};
 
 export default function App() {
   const transition = useTransition();
