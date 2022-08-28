@@ -10,7 +10,7 @@ import { AxisOptions, Chart } from "react-charts";
 import invariant from "tiny-invariant";
 import { userCookie } from "~/cookie";
 import { getEntity } from "~/models/entity.server";
-import { getUser, createUser } from "~/models/user.server";
+import { getUser, createUser, User } from "~/models/user.server";
 import { createVote } from "~/models/vote.server";
 
 type LoaderData = Awaited<ReturnType<typeof getEntity>>;
@@ -34,50 +34,32 @@ export const action: ActionFunction = async ({ request }) => {
 
 export const loader: LoaderFunction = async ({ request, params }) => {
   const { slug } = params;
+  let user: User | null = null;
   const cookieHeader = request.headers.get("Cookie");
   if (cookieHeader) {
     let id = await userCookie.parse(cookieHeader);
     if (id) {
-      let currentUser = await getUser({
+      user = await getUser({
         id: id.userId,
       });
-      if (!currentUser) {
-        let newUser = await createUser();
-        if (slug) {
-          const entity = await getEntity({ slug });
-          return json(entity, {
-            headers: {
-              "Set-Cookie": await userCookie.serialize({
-                userId: newUser.id,
-              }),
-            },
-          });
-        }
-      }
-    }
-    if (!id) {
-      let newUser = await createUser();
-      if (slug) {
-        const entity = await getEntity({ slug });
-        return json(entity, {
-          headers: {
-            "Set-Cookie": await userCookie.serialize({ userId: newUser.id }),
-          },
-        });
+      if (!user) {
+        user = await createUser();
       }
     }
   } else {
-    let newUser = await createUser();
-    if (slug) {
-      const entity = await getEntity({ slug });
-      return json(entity, {
-        headers: {
-          "Set-Cookie": await userCookie.serialize({
-            userId: newUser.id,
-          }),
-        },
-      });
-    }
+    user = await createUser();
+  }
+  if (slug && user) {
+    const entity = await getEntity({ slug });
+    return json(entity, {
+      headers: {
+        "Set-Cookie": await userCookie.serialize({
+          userId: user.id,
+        }),
+      },
+    });
+  } else if (!slug) {
+    return null;
   }
 };
 
