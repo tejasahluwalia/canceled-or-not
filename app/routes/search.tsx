@@ -63,7 +63,7 @@ export default function Search() {
   const searchQueryResults = useLoaderData<LoaderData>();
   const transition = useTransition();
 
-  if (searchQueryResults) {
+  if (searchQueryResults.query?.pages) {
     const suggestions = Object.values(searchQueryResults.query.pages).sort(
       (a, b) => a.index - b.index
     );
@@ -71,7 +71,7 @@ export default function Search() {
       <Form
         method="post"
         action="/search"
-        className="container mx-auto mt-20 flex w-full flex-col gap-4 lg:max-w-3xl"
+        className="container mx-auto mt-20 flex w-full flex-col gap-4 px-4 lg:max-w-3xl"
       >
         {suggestions.map((page) => (
           <button
@@ -81,7 +81,7 @@ export default function Search() {
             value={JSON.stringify(page)}
             autoFocus={page.index === 1}
             disabled={transition.state === "submitting"}
-            className="mx-4 flex items-center gap-4 border-4 border-black p-4 text-left text-2xl font-bold uppercase outline hover:outline-4 hover:outline-red-600 focus:border-red-600 focus:outline-4 focus:outline-red-600 sm:h-32"
+            className="flex items-center gap-4 border-4 border-black p-4 text-left text-2xl font-bold uppercase outline hover:outline-4 hover:outline-red-600 focus:border-red-600 focus:outline-4 focus:outline-red-600 sm:h-32"
           >
             {page.thumbnail && (
               <img
@@ -96,6 +96,10 @@ export default function Search() {
       </Form>
     );
   } else {
-    return null;
+    return (
+      <div className="container mx-auto mt-20 flex w-full flex-col gap-4 lg:max-w-3xl">
+        <span className="text-center text-4xl">No Results Found</span>
+      </div>
+    );
   }
 }

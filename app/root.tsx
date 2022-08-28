@@ -1,28 +1,20 @@
-import type {
-  LinksFunction,
-  LoaderFunction,
-  MetaFunction,
-} from "@remix-run/node";
-import { json } from "@remix-run/node";
+import type { LinksFunction, MetaFunction } from "@remix-run/node";
 import {
+  Form,
   Links,
   LiveReload,
   Meta,
   Outlet,
   Scripts,
   ScrollRestoration,
-  Form,
   useTransition,
 } from "@remix-run/react";
 import { SSRProvider } from "react-aria";
 
-import tailwindStylesheetUrl from "./styles/tailwind.css";
-import globalStyleSheet from "./styles/global.css";
-import { userCookie } from "./cookie";
-import { createUser, getUser } from "./models/user.server";
-import { useEffect, useState } from "react";
 import clsx from "clsx";
-import { prisma } from "@prisma/client";
+import { useEffect, useState } from "react";
+import globalStyleSheet from "./styles/global.css";
+import tailwindStylesheetUrl from "./styles/tailwind.css";
 
 export const links: LinksFunction = () => {
   return [
@@ -39,48 +31,35 @@ export const meta: MetaFunction = () => ({
 
 export default function App() {
   const transition = useTransition();
-  const [scrollPosition, setScrollPosition] = useState(0);
-
-  const handleScroll = () => {
-    const position = window.pageYOffset;
-    setScrollPosition(position);
-  };
-
-  useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
   return (
     <SSRProvider>
       <html lang="en">
         <head>
           <Meta />
           <Links />
+          <link
+            rel="icon"
+            href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2285%22>🚫</text></svg>"
+          />
         </head>
-        <body className="mt-1/5 relative flex h-full min-h-screen flex-col items-center bg-white">
-          <section className="fixed top-0 z-10 mx-auto w-full bg-black text-center shadow-xl">
+        <body className="relative flex h-full min-h-screen flex-col items-center bg-white ">
+          <section className="fixed top-0 z-10 mx-auto w-full bg-stone-900 text-center shadow-xl">
             <Form
               method="get"
               action="/search"
               className={clsx(
-                "container my-8 mx-auto w-full px-4 transition-all duration-200 lg:max-w-3xl",
-                scrollPosition > 10 ? "mt-4" : ""
+                "container my-8 mx-auto w-full px-4 transition-all duration-200 lg:max-w-3xl"
               )}
             >
               <label htmlFor="query">
-                <h1
-                  className={clsx(
-                    "block text-5xl text-[red] transition-all duration-200 sm:text-6xl md:text-7xl lg:text-8xl",
-                    scrollPosition > 10
-                      ? "mb-4 text-3xl sm:text-4xl md:text-5xl lg:text-6xl"
-                      : "mb-8"
-                  )}
+                <a
+                  href="/
+                "
                 >
-                  Canceled or Not
-                </h1>
+                  <h1 className="mb-8 block text-5xl font-bold uppercase text-red-600 transition-all duration-200 sm:text-4xl md:text-5xl lg:text-6xl">
+                    Canceled or Not
+                  </h1>
+                </a>
               </label>
               <div className="flex w-full gap-4">
                 <input
@@ -100,9 +79,10 @@ export default function App() {
               </div>
             </Form>
           </section>
-          <div className="container mx-auto mt-48">
+          <div className="container mx-auto mt-60 px-4 text-stone-900">
             <Outlet />
           </div>
+          <footer className="mt-16 w-full bg-stone-900 px-4 py-16"></footer>
           <ScrollRestoration />
           <Scripts />
           <LiveReload />

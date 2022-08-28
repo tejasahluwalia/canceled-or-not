@@ -84,3 +84,25 @@ export async function createEntity({
 
   return;
 }
+
+export async function getPopularEntities() {
+  return await prisma.entity.findMany({
+    orderBy: {
+      votes: {
+        _count: "desc",
+      },
+    },
+    select: {
+      id: true,
+      name: true,
+      imageUrl: true,
+      slug: true,
+      _count: {
+        select: {
+          votes: true,
+        },
+      },
+    },
+    take: 5,
+  });
+}

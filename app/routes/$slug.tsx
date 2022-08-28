@@ -134,7 +134,7 @@ export default function Entity() {
       },
     ];
     return (
-      <section className="container mx-auto px-4">
+      <section>
         <div className="flex w-full flex-col items-center gap-8 py-8 md:flex-row md:py-16">
           <div className="flex flex-col items-center md:items-start">
             <h2 className="mb-4 text-5xl font-bold uppercase">
@@ -186,8 +186,7 @@ export default function Entity() {
                         y1="0"
                         y2="0"
                       >
-                        <stop offset="0%" stopColor="#1E9600" />
-                        <stop offset="50%" stopColor="#FFF200" />
+                        <stop offset="0%" stopColor="#FFF200" />
                         <stop offset="100%" stopColor="#FF0000" />
                       </linearGradient>
                     </defs>
