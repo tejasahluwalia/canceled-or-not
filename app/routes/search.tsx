@@ -71,8 +71,9 @@ export default function Search() {
       <Form
         method="post"
         action="/search"
-        className="container mx-auto mt-20 flex w-full flex-col gap-4 px-4 lg:max-w-3xl"
+        className="container mx-auto flex w-full flex-col gap-4 lg:max-w-screen-md"
       >
+        <h2 className="text-4xl font-bold uppercase">Search Results</h2>
         {suggestions.map((page) => (
           <button
             name="entity"
@@ -97,8 +98,10 @@ export default function Search() {
     );
   } else {
     return (
-      <div className="container mx-auto mt-20 flex w-full flex-col gap-4 lg:max-w-3xl">
-        <span className="text-center text-4xl">No Results Found</span>
+      <div className="container mx-auto flex w-full flex-col gap-4 lg:max-w-screen-md">
+        <span className="text-center text-4xl font-bold uppercase">
+          No Results Found
+        </span>
       </div>
     );
   }

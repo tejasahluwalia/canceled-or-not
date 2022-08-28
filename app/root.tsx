@@ -42,7 +42,7 @@ export default function App() {
             href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2285%22>🚫</text></svg>"
           />
         </head>
-        <body className="relative flex h-full min-h-screen flex-col items-center bg-white ">
+        <body className="relative flex h-full min-h-screen flex-col items-center bg-white">
           <section className="fixed top-0 z-10 mx-auto w-full bg-stone-900 text-center shadow-xl">
             <Form
               method="get"
@@ -82,7 +82,7 @@ export default function App() {
           <div className="container mx-auto mt-60 px-4 text-stone-900">
             <Outlet />
           </div>
-          <footer className="mt-16 w-full bg-stone-900 px-4 py-16"></footer>
+          <footer className="mt-16 w-full flex-1 bg-stone-900 px-4 py-16"></footer>
           <ScrollRestoration />
           <Scripts />
           <LiveReload />
